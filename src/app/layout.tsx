@@ -12,8 +12,8 @@ export const metadata = {
   title: '生物信息文件夹',
   description: '记录生物信息学学习与工作中的点点滴滴',
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
+    icon: '/icon.ico',
+    shortcut: '/icon.ico',
   },
 }
 
