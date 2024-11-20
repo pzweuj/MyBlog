@@ -1,40 +1,60 @@
-# Welcome to Remix!
+# 个人博客网站
 
-- 📖 [Remix docs](https://remix.run/docs)
+基于Nextjs构建的静态网页，托管于GitHub Pages。使用GitHub Actions触发静态页面构建。
 
-## Development
+全程由Claude AI辅助开发。不知道哪些是废弃代码，后续再进行清理。
 
-Run the dev server:
+## 设计风格
 
-```shellscript
-npm run dev
-```
+- 主题：简约现代风格
+- 配色：黑白为主
+- 响应式布局
+- 主题模式：
+  - 支持手动切换主题开关
 
-## Deployment
+## 功能模块
 
-First, build your app for production:
+### 页面结构
+- **博客首页**：展示文章列表
+  - 显示标题、文章摘要、日期
+  - 分页展示
+  - 搜索图标触发全站搜索
+  
+- **归档页面**：时间线式展示所有文章
+  - 顶部搜索栏
+  - 按时间归档
+  - 按标签(Tags)快速筛选
+  - 仅显示标题
+  
+- **实践文档**：技术文档中心
+  - 顶部搜索栏
+  - 侧边栏导航
+  - 类ReadTheDocs布局
+  
+- **关于页面**：个人信息展示
 
-```sh
-npm run build
-```
+### 核心功能
+- 全站搜索
+  - 首页：搜索图标触发
+  - 归档/实践页面：顶部固定搜索栏
+  - 支持标题和内容搜索
+- 响应式设计
+- 智能主题切换
+  - 基于时间的自动主题切换
+  - 手动主题切换开关
+- 文章以Markdown进行编写
+- GitHub Actions构建静态网页
+- 窗口大小自适应，多种设备兼容
 
-Then run the app in production mode:
+## 部署方式
 
-```sh
-npm start
-```
+- 文章存储：GitHub仓库
+- 自动部署：GitHub Actions
+- 托管平台：GitHub Pages
 
-Now you'll need to pick a host to deploy it to.
+## 技术栈
 
-### DIY
+- NextJs
+- GitHub Actions
+- Markdown
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
