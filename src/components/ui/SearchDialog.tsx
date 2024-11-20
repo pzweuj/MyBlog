@@ -6,10 +6,12 @@ import { SearchIcon } from './Icons'
 import { Command } from 'cmdk'
 
 interface SearchResult {
+  id: string
   title: string
   excerpt: string
   slug: string
   date: string
+  matchType: 'title' | 'content'
 }
 
 export default function SearchDialog() {
@@ -39,7 +41,18 @@ export default function SearchDialog() {
     try {
       const response = await fetch(`/api/search?q=${encodeURIComponent(search)}`)
       const data = await response.json()
-      setResults(data)
+      
+      const articleMap = new Map()
+      
+      data.forEach((item: SearchResult) => {
+        const existing = articleMap.get(item.slug)
+        if (!existing || (item.matchType === 'title' && existing.matchType === 'content')) {
+          articleMap.set(item.slug, item)
+        }
+      })
+
+      const uniqueResults = Array.from(articleMap.values())
+      setResults(uniqueResults)
     } catch (error) {
       console.error('搜索失败:', error)
       setResults([])
