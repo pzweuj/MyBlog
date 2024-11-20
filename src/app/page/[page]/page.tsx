@@ -3,7 +3,7 @@ import { PostCard, Pagination } from '@/components/blog/PostList'
 import { notFound } from 'next/navigation'
 
 export default async function BlogPage({ params }: { params: { page: string } }) {
-  const pageParam = await Promise.resolve(params.page)
+  const { page: pageParam } = await params
   const page = parseInt(pageParam)
   
   if (isNaN(page) || page < 1) {
