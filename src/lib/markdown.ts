@@ -1,6 +1,4 @@
-'use server'
-
-import fs from 'fs/promises'
+import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
@@ -93,35 +91,33 @@ function parseTags(tags: unknown): string[] {
   return []
 }
 
-export async function getAllPosts(): Promise<BlogPost[]> {
+export function getAllPosts(): BlogPost[] {
   const postsDirectory = path.join(process.cwd(), 'content/posts')
-  const fileNames = await fs.readdir(postsDirectory)
+  const fileNames = fs.readdirSync(postsDirectory)
   
-  const posts = await Promise.all(
-    fileNames
-      .filter(fileName => fileName.endsWith('.md'))
-      .map(async fileName => {
-        const { date, slug } = parseFileName(fileName)
-        const fullPath = path.join(postsDirectory, fileName)
-        const fileContents = await fs.readFile(fullPath, 'utf8')
-        const { data, content } = matter(fileContents)
-        
-        return {
-          slug,
-          title: data.title || slug,
-          date,
-          tags: parseTags(data.tags),
-          excerpt: generateExcerpt(content),
-          content: md.render(content)
-        }
-      })
-  )
+  const posts = fileNames
+    .filter(fileName => fileName.endsWith('.md'))
+    .map(fileName => {
+      const { date, slug } = parseFileName(fileName)
+      const fullPath = path.join(postsDirectory, fileName)
+      const fileContents = fs.readFileSync(fullPath, 'utf8')
+      const { data, content } = matter(fileContents)
+      
+      return {
+        slug,
+        title: data.title || slug,
+        date,
+        tags: parseTags(data.tags),
+        excerpt: generateExcerpt(content),
+        content: md.render(content)
+      }
+    })
 
   return posts.sort((a, b) => b.date.localeCompare(a.date))
 }
 
-export async function getPaginatedPosts(page: number = 1, limit: number = 5) {
-  const posts = await getAllPosts()
+export function getPaginatedPosts(page: number = 1, limit: number = 5) {
+  const posts = getAllPosts()
   const startIndex = (page - 1) * limit
   const endIndex = startIndex + limit
   const totalPages = Math.ceil(posts.length / limit)

@@ -1,10 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  devIndicators: {
-    buildActivity: true,
-    buildActivityPosition: 'bottom-right',
-  },
-};
+  output: "export",  // 启用静态导出
+  reactStrictMode: true,
+  images: {
+    unoptimized: true, // 静态导出需要
+  }
+}
 
-export default nextConfig;
+export default nextConfig 
