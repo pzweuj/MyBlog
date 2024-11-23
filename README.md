@@ -4,53 +4,42 @@
 
 全程由Claude AI辅助开发。不知道哪些是废弃代码，后续再进行清理。
 
-## 设计风格
+示例网站：https://pzweuj.github.io
 
-- 主题：简约现代风格
-- 配色：黑白为主
-- 响应式布局
-- 主题模式：
-  - 支持手动切换主题开关
 
-## 功能模块
 
-### 页面结构
-- **博客首页**：展示文章列表
-  - 显示标题、文章摘要、日期
-  - 分页展示
-  - 搜索图标触发全站搜索
-  
-- **归档页面**：时间线式展示所有文章
-  - 顶部搜索栏
-  - 按时间归档
-  - 按标签(Tags)快速筛选
-  - 仅显示标题
-  
-- **实践文档**：技术文档中心
-  - 顶部搜索栏
-  - 侧边栏导航
-  - 类ReadTheDocs布局
-  
-- **关于页面**：个人信息展示
+## 基本使用
 
-### 核心功能
-- 搜索
-- 响应式设计
-- 智能主题切换
-  - 基于时间的自动主题切换
-  - 手动主题切换开关
-- 文章以Markdown进行编写
-- 窗口大小自适应，多种设备兼容
+```bash
+git clone https://github.com/pzweuj/MyBlog.git
+```
 
-## 部署方式
+可通过下面的文件修改基本信息
 
-- 文章存储：GitHub仓库
-- 自动部署：GitHub Actions
-- 托管平台：GitHub Pages
+```
+src\config\self.config.ts
+```
 
-## 技术栈
+可自行修改icon
+```
+src\app\icon.ico
+```
 
-- NextJs
-- GitHub Actions
-- Markdown
+修改下面的文件达成**关于**信息的修改
+```
+content\about.md
+```
+
+
+上传Markdown博客文章到下面的路径，格式请参考示例文件
+```
+content\posts
+```
+
+上传Markdown文档文章到下面的路径，格式请参考示例文件，可修改该目录下的index.md。
+```
+content\project
+```
+
+
 
