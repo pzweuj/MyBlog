@@ -41,5 +41,10 @@ content\posts
 content\project
 ```
 
+## 其他
+支持插入QQ音乐，在Markdown中，输入如下标签：
+```
+[QQMUSIC:歌曲ID]
+```
 
 
