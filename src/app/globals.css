@@ -27,6 +27,11 @@ pre[class*="language-"] {
   font-size: 0.9em;
 }
 
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none !important;
+}
+
 /* Prism.js 语法高亮主题 */
 .token.comment,
 .token.prolog,

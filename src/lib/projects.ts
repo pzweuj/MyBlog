@@ -1,52 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkMath from 'remark-math'
-import remarkRehype from 'remark-rehype'
-import rehypeKatex from 'rehype-katex'
-import rehypeStringify from 'rehype-stringify'
-import rehypePrism from 'rehype-prism-plus'
-import rehypeImgSize from 'rehype-img-size'
-import remarkGfm from 'remark-gfm'
-import { remarkQQMusic } from './plugins/remarkQQMusic'
-
-// 创建统一的 markdown 处理器
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkQQMusic)
-  .use(remarkMath)
-  .use(remarkGfm)
-  .use(remarkRehype, {
-    allowDangerousHtml: true
-  })
-  .use(rehypePrism, {
-    showLineNumbers: true,
-    ignoreMissing: true,
-    aliases: {
-      typescript: ['ts'],
-      javascript: ['js'],
-      python: ['py'],
-      r: ['R'],
-      perl: ['pl']
-    }
-  })
-  .use(rehypeImgSize, {
-    dir: path.join(process.cwd(), 'public')
-  })
-  .use(rehypeKatex, {
-    strict: false
-  })
-  .use(rehypeStringify, {
-    allowDangerousHtml: true
-  })
-
-// 异步渲染 markdown
-async function renderMarkdown(content: string): Promise<string> {
-  const result = await processor.process(content)
-  return result.toString()
-}
+import { cache } from 'react'
+import { renderMarkdown } from './markdown'
 
 export interface ProjectDoc {
   slug: string
@@ -69,7 +25,7 @@ function extractH1Title(content: string): string | null {
   return match ? match[1].trim() : null
 }
 
-export async function getProjectDocs(): Promise<ProjectChapter[]> {
+export const getProjectDocs = cache(async (): Promise<ProjectChapter[]> => {
   const projectPath = path.join(process.cwd(), 'content/project')
   const chapters: ProjectChapter[] = []
   
@@ -121,10 +77,10 @@ export async function getProjectDocs(): Promise<ProjectChapter[]> {
   chapters.sort((a, b) => a.order - b.order)
   
   return chapters
-}
+})
 
 // 获取首页内容
-export async function getProjectIndex() {
+export const getProjectIndex = cache(async () => {
   const indexPath = path.join(process.cwd(), 'content/project/index.md')
   const content = fs.readFileSync(indexPath, 'utf-8')
   const { data, content: markdown } = matter(content)
@@ -133,4 +89,4 @@ export async function getProjectIndex() {
     title: data.title || '实践项目',
     content: await renderMarkdown(markdown)
   }
-} 
+})

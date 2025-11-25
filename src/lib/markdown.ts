@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import { cache } from 'react'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkMath from 'remark-math'
@@ -24,6 +25,13 @@ const processor = unified()
   .use(rehypePrism, {
     showLineNumbers: true,
     ignoreMissing: true,
+    aliases: {
+      typescript: ['ts'],
+      javascript: ['js'],
+      python: ['py'],
+      r: ['R'],
+      perl: ['pl']
+    }
   })
   .use(rehypeImgSize, {
     dir: path.join(process.cwd(), 'public')
@@ -35,11 +43,11 @@ const processor = unified()
     allowDangerousHtml: true
   })
 
-// 异步渲染 markdown
-async function renderMarkdown(content: string): Promise<string> {
+// 异步渲染 markdown（缓存同一内容的渲染结果）
+export const renderMarkdown = cache(async (content: string): Promise<string> => {
   const result = await processor.process(content)
   return result.toString()
-}
+})
 
 // 接口定义保持不变
 export interface BlogPost {
@@ -99,7 +107,7 @@ function parseTags(tags: unknown): string[] {
 }
 
 // 修改为异步函数
-export async function getAllPosts(): Promise<BlogPost[]> {
+export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
   const postsDirectory = path.join(process.cwd(), 'content/posts')
   const fileNames = fs.readdirSync(postsDirectory)
   
@@ -122,7 +130,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
     }))
 
   return posts.sort((a, b) => b.date.localeCompare(a.date))
-}
+})
 
 // 分页相关接口定义保持不变
 export interface PaginationInfo {

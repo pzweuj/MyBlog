@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { getAllPosts } from './markdown'
 
 export interface SearchResult {
@@ -9,7 +10,7 @@ export interface SearchResult {
   matchType: 'title' | 'content'
 }
 
-export async function generateSearchIndex() {
+export const generateSearchIndex = cache(async () => {
   const posts = await getAllPosts()
   
   const searchIndex = posts.flatMap(post => {
@@ -35,4 +36,4 @@ export async function generateSearchIndex() {
   })
   
   return searchIndex
-} 
+})
