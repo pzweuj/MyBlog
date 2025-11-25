@@ -13,6 +13,22 @@ import rehypePrism from 'rehype-prism-plus'
 import rehypeImgSize from 'rehype-img-size'
 import { remarkQQMusic } from './plugins/remarkQQMusic'
 
+const prismAliases = {
+  typescript: ['ts'],
+  javascript: ['js'],
+  python: ['py'],
+  r: ['R'],
+  perl: ['pl'],
+  shell: ['bash', 'sh', 'zsh'],
+  shellsession: ['console', 'terminal'],
+  json: ['jsonc'],
+  yaml: ['yml'],
+  markdown: ['md'],
+  plaintext: ['text', 'txt'],
+  dockerfile: ['docker'],
+  powershell: ['ps', 'ps1']
+}
+
 // 创建统一的 markdown 处理器
 const processor = unified()
   .use(remarkParse)
@@ -25,13 +41,7 @@ const processor = unified()
   .use(rehypePrism, {
     showLineNumbers: true,
     ignoreMissing: true,
-    aliases: {
-      typescript: ['ts'],
-      javascript: ['js'],
-      python: ['py'],
-      r: ['R'],
-      perl: ['pl']
-    }
+    aliases: prismAliases
   })
   .use(rehypeImgSize, {
     dir: path.join(process.cwd(), 'public')
@@ -52,6 +62,7 @@ export const renderMarkdown = cache(async (content: string): Promise<string> => 
 // 接口定义保持不变
 export interface BlogPost {
   slug: string
+  slugBase: string
   title: string
   date: string
   tags: string[]
@@ -63,9 +74,12 @@ export interface BlogPost {
 function parseFileName(fileName: string) {
   const match = fileName.match(/^(\d{4}-\d{2}-\d{2})-(.+)\.md$/)
   if (!match) throw new Error(`Invalid file name format: ${fileName}`)
+  const date = match[1]
+  const slugBase = match[2]
   return {
-    date: match[1],
-    slug: match[2]
+    date,
+    slugBase,
+    slug: `${date}-${slugBase}`
   }
 }
 
@@ -114,14 +128,15 @@ export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
   const posts = await Promise.all(fileNames
     .filter(fileName => fileName.endsWith('.md'))
     .map(async fileName => {
-      const { date, slug } = parseFileName(fileName)
+      const { date, slug, slugBase } = parseFileName(fileName)
       const fullPath = path.join(postsDirectory, fileName)
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const { data, content } = matter(fileContents)
       
       return {
         slug,
-        title: data.title || slug,
+        slugBase,
+        title: data.title || slugBase,
         date,
         tags: parseTags(data.tags),
         excerpt: generateExcerpt(content),
